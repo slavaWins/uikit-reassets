@@ -1,4 +1,4 @@
-package org.slavawins.uikit.comonet;
+package org.slavawins.uikit.componet;
 
 import org.slavawins.uikit.CustomMaterial;
 import org.slavawins.uikit.menucore.BtnMenuCoreContract;
@@ -26,8 +26,8 @@ public class ScrollComponent extends BaseComponent<Number> {
         this.height = height;
         current = 1;
 
-        up = menuBase.AddButtonItem(9, y, CustomMaterial.UIKIT_ITEMS_BUTTON_LEFT.toItem(), this::UpClick, true);
-        down = menuBase.AddButtonItem(9, y + height, CustomMaterial.UIKIT_ITEMS_BUTTON_RIGHT.toItem(), this::DownClick, true);
+        up = menuBase.addButtonItem(9, y, CustomMaterial.UIKIT_ITEMS_BUTTON_LEFT.toItem(), this::UpClick, true);
+        down = menuBase.addButtonItem(9, y + height, CustomMaterial.UIKIT_ITEMS_BUTTON_RIGHT.toItem(), this::DownClick, true);
     }
 
     private void UpClick(BtnMenuCoreContract btnMenuCoreContract) {
@@ -48,6 +48,8 @@ public class ScrollComponent extends BaseComponent<Number> {
 
     @Override
     public void Render() {
+        if( menuBase.guiInventory==null)return;
+
         // Number current - текущая страница
         int pageSize = 8 * (1 + height);
 
@@ -73,7 +75,7 @@ public class ScrollComponent extends BaseComponent<Number> {
 
 
                 if (filtredContecnt.size() < number + 1) { //3 < 0 + 2 + 1
-                    menuBase.guiInventory.setItem(menuBase.PosToId(_x, _y), null);
+                    menuBase.guiInventory.setItem(menuBase.posToId(_x, _y), null);
                     continue;
                 }
 

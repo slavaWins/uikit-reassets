@@ -1,8 +1,5 @@
-package org.slavawins.uikit.comonet;
+package org.slavawins.uikit.componet;
 
-import org.bukkit.Bukkit;
-import org.bukkit.inventory.ItemStack;
-import org.slavawins.reassets.integration.ReassetsGet;
 import org.slavawins.uikit.CustomMaterial;
 import org.slavawins.uikit.menucore.BtnMenuCoreContract;
 import org.slavawins.uikit.menucore.MenuBase;
@@ -20,8 +17,8 @@ public class TabComponent extends BaseComponent<Number> {
     public TabComponent(MenuBase menuBase, int y) {
         super(menuBase, 0, y, 1);
 
-        left = menuBase.AddButtonItem(1, y, CustomMaterial.UIKIT_ITEMS_BUTTON_LEFT.toItem(), this::Left, true);
-        right = menuBase.AddButtonItem(9, y, CustomMaterial.UIKIT_ITEMS_BUTTON_RIGHT.toItem(), this::Right, true);
+        left = menuBase.addButtonItem(1, y, CustomMaterial.UIKIT_ITEMS_BUTTON_LEFT.toItem(), this::Left, true);
+        right = menuBase.addButtonItem(9, y, CustomMaterial.UIKIT_ITEMS_BUTTON_RIGHT.toItem(), this::Right, true);
     }
 
     private void Left(BtnMenuCoreContract btnMenuCoreContract) {
@@ -55,7 +52,7 @@ public class TabComponent extends BaseComponent<Number> {
 
 
             if (contents.size() < (start + i - 2)+1) { //3 < 0 + 2 + 1
-                menuBase.guiInventory.setItem(menuBase.PosToId(i,y), null);
+                menuBase.guiInventory.setItem(menuBase.posToId(i,y), null);
                 continue;
             }
 

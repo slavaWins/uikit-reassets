@@ -1,13 +1,6 @@
-package org.slavawins.uikit.comonet;
+package org.slavawins.uikit.componet;
 
-import org.bukkit.Bukkit;
-import org.bukkit.inventory.ItemStack;
-import org.slavawins.reassets.integration.ReassetsGet;
-import org.slavawins.uikit.menucore.BtnMenuCoreContract;
 import org.slavawins.uikit.menucore.MenuBase;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BaseComponent<T> {
 

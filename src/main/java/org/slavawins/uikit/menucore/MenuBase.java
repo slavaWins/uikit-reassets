@@ -31,7 +31,7 @@ public class MenuBase implements Listener {
     public List<BtnMenuCoreContract> listBtns = new ArrayList<>();
     public Inventory guiInventory;
 
-
+    public boolean eventDisabled = false;
     public boolean isLockedAll = true;
     public boolean isChestMode = true;
 
@@ -39,6 +39,18 @@ public class MenuBase implements Listener {
         this.rows = Math.min(i, 6);
     }
 
+
+    public void navigateTo(MenuBase devMenu) {
+        eventDisabled = true;
+        clearButtons();
+
+        guiInventory.clear();
+        guiInventory = null;
+
+        delete();
+
+        devMenu.show(player);
+    }
 
     /**
      * Установить бэкграунд для инвентаря. Центрированый контейнер
@@ -94,7 +106,7 @@ public class MenuBase implements Listener {
     }
 
 
-    public final int PosToId(int x, int y) {
+    public final int posToId(int x, int y) {
         if (x < 0 || x > 9 || y < 0 || y > rows) {
             return -1;
         }
@@ -118,7 +130,7 @@ public class MenuBase implements Listener {
         return y;
     }
 
-    public final BtnMenuCoreContract AddButton(int x, int y, Material mat, String name, String descr, Consumer<BtnMenuCoreContract> event) {
+    public final BtnMenuCoreContract addButton(int x, int y, Material mat, String name, String descr, Consumer<BtnMenuCoreContract> event) {
         ItemStack item = new ItemStack(mat);
         ItemMeta meta = item.getItemMeta();
         List<String> lore = new ArrayList<>();
@@ -129,10 +141,10 @@ public class MenuBase implements Listener {
         meta.setDisplayName(name);
         item.setItemMeta(meta);
 
-        return AddButtonItem(x, y, item, event, true);
+        return addButtonItem(x, y, item, event, true);
     }
 
-    public final BtnMenuCoreContract AddButtonItem(int x, int y, ItemStack item, Consumer<BtnMenuCoreContract> event, boolean isLockedBtn) {
+    public final BtnMenuCoreContract addButtonItem(int x, int y, ItemStack item, Consumer<BtnMenuCoreContract> event, boolean isLockedBtn) {
 
 
         BtnMenuCoreContract btn = new BtnMenuCoreContract();
@@ -141,7 +153,7 @@ public class MenuBase implements Listener {
         btn.item = item;
         btn.action = "_";
         btn.event = event;
-        btn.id = PosToId(x, y);
+        btn.id = posToId(x, y);
         btn.isLocked = isLockedBtn;
         btn.menuBase = this;
         this.listBtns.add(btn);
@@ -149,7 +161,7 @@ public class MenuBase implements Listener {
     }
 
 
-    public final void Init() {
+    public final void init() {
 
         if (guiInventory != null) return;
 
@@ -163,13 +175,13 @@ public class MenuBase implements Listener {
     }
 
 
-    public void ClearButtons() {
+    public void clearButtons() {
         for (BtnMenuCoreContract btn : listBtns) {
             guiInventory.setItem(btn.id, null);
         }
     }
 
-    public void RenderButtons() {
+    public void renderButtons() {
         for (BtnMenuCoreContract btn : listBtns) {
 
             if (!btn.visible) {
@@ -202,11 +214,11 @@ public class MenuBase implements Listener {
     public final void show(Player player) {
         this.player = player;
 
-        Init();
+        init();
 
 
         onShow();
-        RenderButtons();
+        renderButtons();
 
 
         menuId = UUID.randomUUID().toString();
@@ -226,7 +238,7 @@ public class MenuBase implements Listener {
     }
 
 
-    private final void Delete() {
+    private final void delete() {
 
         PMetaHelper.remove(player, MENU_META_KEY);
 
@@ -244,24 +256,24 @@ public class MenuBase implements Listener {
 
     }
 
-    public final BtnMenuCoreContract GetBtn(int id) {
+    public final BtnMenuCoreContract getBtn(int id) {
         for (BtnMenuCoreContract btn : listBtns) {
             if (btn.id == id) return btn;
         }
         return null;
     }
 
-    public void OnClickButton(BtnMenuCoreContract btn, ClickType clickType, ItemStack currentItemInMouse) {
+    public void onClickButton(BtnMenuCoreContract btn, ClickType clickType, ItemStack currentItemInMouse) {
         //  player.sendMessage("CBTN:" + btn.action);
     }
 
-    public void OnClickEmpty(int id, ClickType clickType, ItemStack currentItemInMouse) {
+    public void onClickEmpty(int id, ClickType clickType, ItemStack currentItemInMouse) {
         //  player.sendMessage("CBTN to empty:" + id);
     }
 
 
     @org.bukkit.event.EventHandler
-    public final void eventonClick(InventoryClickEvent e) {
+    public final void eventOnClick(InventoryClickEvent e) {
 
 
         if (guiInventory == null) return;
@@ -289,38 +301,38 @@ public class MenuBase implements Listener {
         }
 
 
-        BtnMenuCoreContract btn = GetBtn(e.getSlot());
+        BtnMenuCoreContract btn = getBtn(e.getSlot());
         if (btn != null) {
-            OnClickButton(btn, e.getClick(), e.getCurrentItem());
+            onClickButton(btn, e.getClick(), e.getCurrentItem());
             if (btn.event != null) {
                 btn.event.accept(btn);
             }
             if (btn.isLocked || isLockedAll) e.setCancelled(true);
 
         } else {
-            OnClickEmpty(e.getSlot(), e.getClick(), e.getCurrentItem());
+            onClickEmpty(e.getSlot(), e.getClick(), e.getCurrentItem());
             if (isLockedAll) e.setCancelled(true);
         }
 
     }
 
 
-    public void OnCloseEvent() {
+    public void onCloseEvent() {
 
     }
 
     @org.bukkit.event.EventHandler
     public final void onCloseListner(InventoryCloseEvent e) {
 
-
+        if (guiInventory == null) return;
         if (!e.getInventory().equals(guiInventory)) return;
 
-        OnCloseEvent();
+        onCloseEvent();
 
         guiInventory.clear();
         guiInventory = null;
 
-        Delete();
+        delete();
     }
 
     public int findIdByItem(ItemStack itemStack) {
@@ -334,6 +346,9 @@ public class MenuBase implements Listener {
     }
 
     public final void onSetVisible(BtnMenuCoreContract b) {
+        if (guiInventory == null) return;
+
+
         if (!b.visible) {
             int exist = findIdByItem(b.item);
             if (exist == -1) return;
@@ -347,16 +362,16 @@ public class MenuBase implements Listener {
             if (exist > -1) {
                 guiInventory.setItem(exist, null);
             }
-            guiInventory.setItem(PosToId(b.x, b.y), b.item);
+            guiInventory.setItem(posToId(b.x, b.y), b.item);
 
         }
 
     }
 
-    public void SetItemInButton(BtnMenuCoreContract b, ItemStack item) {
+    public void setItemInButton(BtnMenuCoreContract b, ItemStack item) {
         guiInventory.remove(b.item);
         b.item = null;
         b.item = item;
-        guiInventory.setItem(PosToId(b.x, b.y), item);
+        guiInventory.setItem(posToId(b.x, b.y), item);
     }
 }

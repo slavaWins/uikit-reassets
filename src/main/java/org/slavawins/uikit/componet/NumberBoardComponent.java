@@ -1,4 +1,4 @@
-package org.slavawins.uikit.comonet;
+package org.slavawins.uikit.componet;
 
 import org.bukkit.inventory.ItemStack;
 import org.slavawins.reassets.integration.ReassetsGet;
@@ -41,7 +41,7 @@ public class NumberBoardComponent extends BaseComponent<Number> {
             if (btns.size() >= i + 1) {
                 btn = btns.get(i);
             } else {
-                btn = menuBase.AddButtonItem(pos, y, item, null, true);
+                btn = menuBase.addButtonItem(pos, y, item, null, true);
 
             }
             btn.updateId();

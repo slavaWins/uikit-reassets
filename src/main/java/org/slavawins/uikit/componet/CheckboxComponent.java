@@ -1,4 +1,4 @@
-package org.slavawins.uikit.comonet;
+package org.slavawins.uikit.componet;
 
 import org.bukkit.inventory.ItemStack;
 import org.slavawins.reassets.integration.ReassetsGet;
@@ -26,7 +26,7 @@ public class CheckboxComponent {
             item = ReassetsGet.item(iconOff, off);
         }
 
-        BtnMenuCoreContract btn = menuBase.AddButtonItem(x, y, item,  null, true);
+        BtnMenuCoreContract btn = menuBase.addButtonItem(x, y, item,  null, true);
 
         btn.event = (BtnMenuCoreContract b) -> {
             if (b.customData.equalsIgnoreCase("1")) {

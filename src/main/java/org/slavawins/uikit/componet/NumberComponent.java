@@ -1,4 +1,4 @@
-package org.slavawins.uikit.comonet;
+package org.slavawins.uikit.componet;
 
 import org.bukkit.inventory.ItemStack;
 import org.slavawins.reassets.integration.ReassetsGet;
@@ -37,7 +37,7 @@ public class NumberComponent extends BaseComponent<Number> {
         }
 
 
-        btn = menuBase.AddButtonItem(x, y, item, null, true);
+        btn = menuBase.addButtonItem(x, y, item, null, true);
 
         btn.updateId();
         btn.setItem(item);
