@@ -1,10 +1,14 @@
 package org.slavawins.uikit;
 
+import org.bukkit.inventory.ItemStack;
 import org.slavawins.reassets.integration.IEnumString;
+import org.slavawins.reassets.integration.ReassetsGet;
 
 public enum CustomMaterial implements IEnumString {
 
 
+    UIKIT_ITEMS_BUTTON_LEFT,
+    UIKIT_ITEMS_BUTTON_RIGHT,
     UIKIT_ITEMS_BUTTON_CHECKBOX_OFF,
     UIKIT_ITEMS_BUTTON_CHECKBOX_ON,
     UIKIT_ITEMS_BUTTON_TOGLE_OFF,
@@ -27,5 +31,8 @@ public enum CustomMaterial implements IEnumString {
     UIKIT_ITEMS_ICON_ICON_USER,
     UIKIT_ITEMS_ICON_ICON_VALID;
 
+    public ItemStack toItem() {
+        return ReassetsGet.item(toString());
+    }
 
 }

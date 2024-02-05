@@ -15,9 +15,19 @@ public class BtnMenuCoreContract {
     public Consumer<BtnMenuCoreContract> event = null;
     public String customData = "";
 
-      MenuBase menuBase;
-    public void setItem(ItemStack item){
+    MenuBase menuBase;
+
+    public void setItem(ItemStack item) {
         menuBase.SetItemInButton(this, item);
     }
 
+    public void updateId(){
+        id = menuBase.PosToId(x,y);
+    }
+    public boolean visible = true;
+
+    public void setVisible(boolean b) {
+        visible = b;
+        menuBase.onSetVisible(this);
+    }
 }

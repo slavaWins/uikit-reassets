@@ -21,7 +21,7 @@ public class BaseComponent<T> {
         this.x = x;
         this.y = y;
         this.current = val;
-        Render();
+        //Render();
     }
 
     public void Render() {

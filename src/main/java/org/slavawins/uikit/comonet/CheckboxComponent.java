@@ -45,11 +45,11 @@ public class CheckboxComponent {
         }
     }
 
-    public static void AddButtonCheckBox(MenuBase menuBase, int x, int y, boolean current, String on, String off, Consumer<Boolean> onChange) {
+    public static void AddToggleCheckBox(MenuBase menuBase, int x, int y, boolean current, String on, String off, Consumer<Boolean> onChange) {
         AddCustomButtonCheckBox(menuBase, x, y, current, on, off, onChange, CustomMaterial.UIKIT_ITEMS_BUTTON_TOGLE_ON.toString(), CustomMaterial.UIKIT_ITEMS_BUTTON_TOGLE_OFF.toString());
     }
 
-    public static void AddToggleCheckBox(MenuBase menuBase, int x, int y, boolean current, String on, String off, Consumer<Boolean> onChange) {
+    public static void AddButtonCheckBox(MenuBase menuBase, int x, int y, boolean current, String on, String off, Consumer<Boolean> onChange) {
         AddCustomButtonCheckBox(menuBase, x, y, current, on, off, onChange, CustomMaterial.UIKIT_ITEMS_BUTTON_CHECKBOX_ON.toString(), CustomMaterial.UIKIT_ITEMS_BUTTON_CHECKBOX_OFF.toString());
     }
 

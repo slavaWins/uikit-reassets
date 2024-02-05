@@ -47,8 +47,23 @@ public class MenuBase implements Listener {
      * @param text
      */
     public final void setBackground(String back, String text) {
-        String val = ChatColor.WHITE + "" +  back.toString();
+        if (back == null) back = "";
+
+        String val = ChatColor.WHITE + "❏" + back;
         if (text != null) val += text;
+        setTitle(val);
+    }
+
+    public final void setBackgroundCenter(String back, String text) {
+        if (back == null) back = "";
+
+        String val = ChatColor.WHITE + "\uD83D\uDF96" + back;
+        if (text != null) {
+            for (int i = 0; i <= 2; i++) {
+                val += "\uD83D\uDF96";
+            }
+            val += "❏" + ChatColor.DARK_GRAY + text;
+        }
         setTitle(val);
     }
 
@@ -117,7 +132,7 @@ public class MenuBase implements Listener {
         return AddButtonItem(x, y, item, event, true);
     }
 
-    public final BtnMenuCoreContract AddButtonItem(int x, int y, ItemStack item, Consumer<BtnMenuCoreContract> event,  boolean isLockedBtn) {
+    public final BtnMenuCoreContract AddButtonItem(int x, int y, ItemStack item, Consumer<BtnMenuCoreContract> event, boolean isLockedBtn) {
 
 
         BtnMenuCoreContract btn = new BtnMenuCoreContract();
@@ -155,6 +170,15 @@ public class MenuBase implements Listener {
 
     public void RenderButtons() {
         for (BtnMenuCoreContract btn : listBtns) {
+
+            if (!btn.visible) {
+                if (btn.item != null) {
+                    if (guiInventory.contains(btn.item)) {
+                        guiInventory.remove(btn.item);
+                    }
+                }
+                continue;
+            }
 
             if (btn.id > rows * 9 || btn.id < 0) {
                 System.out.println("Error item btn possition to " + " - " + btn.action + " in pos " + btn.id + " / x:y = " + btn.x + ":" + btn.y);
@@ -290,10 +314,25 @@ public class MenuBase implements Listener {
         guiInventory = null;
 
         Delete();
-
-
     }
 
+
+    public final void onSetVisible(BtnMenuCoreContract b) {
+        if (!b.visible) {
+            if (!guiInventory.contains(b.item)) return;
+            guiInventory.remove(b.item);
+            return;
+        }
+
+        if (b.item != null) {
+            if (guiInventory.contains(b.item)) {
+                guiInventory.remove(b.item);
+            }
+            guiInventory.setItem(PosToId(b.x, b.y), b.item);
+
+        }
+
+    }
 
     public void SetItemInButton(BtnMenuCoreContract b, ItemStack item) {
         guiInventory.remove(b.item);

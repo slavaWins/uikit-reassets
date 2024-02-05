@@ -1,6 +1,5 @@
 package org.slavawins.uikit.comonet;
 
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.slavawins.reassets.integration.ReassetsGet;
 import org.slavawins.uikit.menucore.BtnMenuCoreContract;
@@ -20,38 +19,37 @@ public class NumberComponent extends BaseComponent<Number> {
 
     @Override
     public void Render() {
-        String value = current + "";
+        if (current.intValue() < 0) current = 0;
 
 
-        for (int i = 0; i < value.length(); i++) {
+        BtnMenuCoreContract btn;
 
-            String _char = value.substring(i, i + 1);
-
-            int pos = x + i;
-            if (x > 9) continue;
-
-            BtnMenuCoreContract btn;
-
-            ItemStack item = ReassetsGet.item("UIKIT_ITEMS_NUMBER_" + _char);
-            if (item == null) continue;
-
-            if (btns.size() >= i + 1) {
-                btn = btns.get(i);
-            } else {
-                btn = menuBase.AddButtonItem(pos, y, item, null, true);
-
-                Bukkit.broadcastMessage("btn create");
-            }
-            btn.setItem(item);
-
-            btns.add(btn);
-
+        ItemStack item;
+        if (current.intValue() <= 64) {
+            item = ReassetsGet.item("UIKIT_ITEMS_NUMBER_" + current.toString());
+        } else {
+            item = ReassetsGet.item("UIKIT_ITEMS_NUMBER_64_PLUS");
         }
+
+        if (item == null) {
+            System.out.println("NO EXIST ICON");
+            return;
+        }
+
+
+        btn = menuBase.AddButtonItem(x, y, item, null, true);
+
+        btn.updateId();
+        btn.setItem(item);
+
+        btns.add(btn);
+
     }
 
     @Override
     public void setVal(Number i) {
         super.setVal(i);
+        Render();
     }
 
 
