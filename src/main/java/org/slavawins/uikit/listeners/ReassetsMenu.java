@@ -37,6 +37,7 @@ public class ReassetsMenu extends MenuBase {
 
             BtnMenuCoreContract btn = AddButtonItem(1, 1, cat.getValue(), null, true);
             btn.action = "tab";
+            btn.setName("Плагин "+ cat.getKey());
             btn.customData = cat.getKey();
             tab.add(btn);
         }
@@ -63,10 +64,6 @@ public class ReassetsMenu extends MenuBase {
         return btn.customData.startsWith(currentTab);
     }
 
-    private void Plus(BtnMenuCoreContract btnMenuCoreContract) {
-
-
-    }
 
     @Override
     public void OnClickButton(BtnMenuCoreContract btn, ClickType clickType, ItemStack currentItemInMouse) {
@@ -78,8 +75,4 @@ public class ReassetsMenu extends MenuBase {
         }
     }
 
-    void Change(Boolean val) {
-
-
-    }
 }

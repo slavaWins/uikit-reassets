@@ -48,9 +48,8 @@ public class ScrollComponent extends BaseComponent<Number> {
 
     @Override
     public void Render() {
-        System.out.println("scrollComponent Render");
         // Number current - текущая страница
-        int pageSize = 8 * height;
+        int pageSize = 8 * (1 + height);
 
 
         filtredContecnt.clear();
@@ -62,19 +61,18 @@ public class ScrollComponent extends BaseComponent<Number> {
         }
 
 
-        int start = (current.intValue() - 1) * pageSize; // начальная позиция элементов текущей страницы // 0
+        int start = (current.intValue() -1) * pageSize; // начальная позиция элементов текущей страницы // 0
         // int end = Math.min(start + pageSize, contents.size()); // конечная позиция элементов текущей страницы //7
 
 
         int number = start;
 
+
         for (int _y = y; _y <= y + height; _y++) {
             for (int _x = 1; _x <= 8; _x++) {
-                number++;
 
 
                 if (filtredContecnt.size() < number + 1) { //3 < 0 + 2 + 1
-                    System.out.println("Clear " + _x + " : " + _y);
                     menuBase.guiInventory.setItem(menuBase.PosToId(_x, _y), null);
                     continue;
                 }
@@ -84,6 +82,8 @@ public class ScrollComponent extends BaseComponent<Number> {
                 item.y = _y;
                 item.updateId();
                 item.setVisible(true);
+
+                number++;
 
             }
         }
