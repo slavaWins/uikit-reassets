@@ -59,7 +59,7 @@ public class MenuBase implements Listener {
 
         String val = ChatColor.WHITE + "\uD83D\uDF96" + back;
         if (text != null) {
-            for (int i = 0; i <= 2; i++) {
+            for (int i = 0; i <= 1; i++) {
                 val += "\uD83D\uDF96";
             }
             val += "❏" + ChatColor.DARK_GRAY + text;
