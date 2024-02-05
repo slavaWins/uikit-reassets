@@ -19,11 +19,11 @@ public class BtnMenuCoreContract {
     MenuBase menuBase;
 
     public void setItem(ItemStack item) {
-        menuBase.SetItemInButton(this, item);
+        menuBase.setItemInButton(this, item);
     }
 
     public void updateId() {
-        id = menuBase.PosToId(x, y);
+        id = menuBase.posToId(x, y);
     }
 
     public boolean visible = true;
