@@ -36,7 +36,7 @@ public class MenuBase implements Listener {
     public boolean isChestMode = true;
 
     public final void setSize(int i) {
-        this.rows = i;
+        this.rows = Math.min(i, 6);
     }
 
 
@@ -154,7 +154,8 @@ public class MenuBase implements Listener {
         if (guiInventory != null) return;
 
         // Создаем новый инвентарь с заданным размером и заголовком
-        guiInventory = Bukkit.createInventory(null, 9 * rows, title);
+
+        guiInventory = Bukkit.createInventory(null, 9 * Math.min(6, rows), title);
 
 
         //System.out.println("guiInventory init size: " + (9 * rows));
@@ -173,8 +174,10 @@ public class MenuBase implements Listener {
 
             if (!btn.visible) {
                 if (btn.item != null) {
-                    if (guiInventory.contains(btn.item)) {
-                        guiInventory.remove(btn.item);
+
+                    int exist = findIdByItem(btn.item);
+                    if (exist > -1) {
+                        guiInventory.setItem(exist, null);
                     }
                 }
                 continue;
@@ -182,6 +185,10 @@ public class MenuBase implements Listener {
 
             if (btn.id > rows * 9 || btn.id < 0) {
                 System.out.println("Error item btn possition to " + " - " + btn.action + " in pos " + btn.id + " / x:y = " + btn.x + ":" + btn.y);
+                continue;
+            }
+            if (btn.id > 54) {
+                System.out.println(ChatColor.RED + "ERROR UIKIT SIZE INV MENU 54");
                 continue;
             }
             guiInventory.setItem(btn.id, btn.item);
@@ -316,17 +323,29 @@ public class MenuBase implements Listener {
         Delete();
     }
 
+    public int findIdByItem(ItemStack itemStack) {
+        for (int i = 0; i < guiInventory.getContents().length; i++) {
+
+            ItemStack item = guiInventory.getContents()[i];
+            if (item == null) continue;
+            if (item == (itemStack)) return i;
+        }
+        return -1;
+    }
 
     public final void onSetVisible(BtnMenuCoreContract b) {
         if (!b.visible) {
-            if (!guiInventory.contains(b.item)) return;
-            guiInventory.remove(b.item);
+            int exist = findIdByItem(b.item);
+            if (exist == -1) return;
+            guiInventory.setItem(exist, null);
             return;
         }
 
         if (b.item != null) {
-            if (guiInventory.contains(b.item)) {
-                guiInventory.remove(b.item);
+
+            int exist = findIdByItem(b.item);
+            if (exist > -1) {
+                guiInventory.setItem(exist, null);
             }
             guiInventory.setItem(PosToId(b.x, b.y), b.item);
 

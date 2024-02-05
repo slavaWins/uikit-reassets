@@ -13,7 +13,7 @@ public final class StartListener implements Listener {
 
         Player player = event.getPlayer();
 
-        new DevMenu().show(player);
+        new ReassetsMenu().show(player);
     }
 
 
