@@ -4,18 +4,8 @@ main: org.slavawins.uikit.Uikit
 api-version: '1.20'
 depend:
   - reassets
+  - TextRender
 commands:
-  mycom:
+  reassetsui:
     description: Базовая
     usage: <command>
-  xquester:
-    description: Базовая
-    usage: <command>
-  xquester next:
-    description: Следующий диалог с нпц
-    usage: <command> [npcId]
-  xquester questeventmake:
-    description: Выполнить квест
-    usage: <command> [player] [eventType] [eventId] [amount]
-  xquestereditor:
-    description: Общий раздел комманд

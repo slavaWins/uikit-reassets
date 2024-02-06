@@ -28,7 +28,7 @@ public class TabComponent extends BaseComponent<Number> {
     }
 
     private void Right(BtnMenuCoreContract btnMenuCoreContract) {
-        System.out.println("right");
+      //  System.out.println("right");
         plus(1);
         Render();
     }

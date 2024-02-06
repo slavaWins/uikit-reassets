@@ -69,7 +69,7 @@ public class MenuBase implements Listener {
     public final void setBackgroundCenter(String back, String text) {
         if (back == null) back = "";
 
-        String val = ChatColor.WHITE + "\uD83D\uDF96" + back;
+        String val = ChatColor.WHITE + back;
         if (text != null) {
             for (int i = 0; i <= 1; i++) {
                 val += "\uD83D\uDF96";
@@ -196,11 +196,11 @@ public class MenuBase implements Listener {
             }
 
             if (btn.id > rows * 9 || btn.id < 0) {
-                System.out.println("Error item btn possition to " + " - " + btn.action + " in pos " + btn.id + " / x:y = " + btn.x + ":" + btn.y);
+               // System.out.println("Error item btn possition to " + " - " + btn.action + " in pos " + btn.id + " / x:y = " + btn.x + ":" + btn.y);
                 continue;
             }
             if (btn.id > 54) {
-                System.out.println(ChatColor.RED + "ERROR UIKIT SIZE INV MENU 54");
+            //    System.out.println(ChatColor.RED + "ERROR UIKIT SIZE INV MENU 54");
                 continue;
             }
             guiInventory.setItem(btn.id, btn.item);

@@ -19,6 +19,6 @@ public class OpLog {
         if (!ConfigHelper.GetConfig().getBoolean("debug", false)) return;
 
         SayOp(text);
-        System.out.println(text);
+      //  System.out.println(text);
     }
 }

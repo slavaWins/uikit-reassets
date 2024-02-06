@@ -58,8 +58,12 @@ public class ReassetsMenu extends MenuBase {
     @Override
     public void onClickButton(BtnMenuCoreContract btn, ClickType clickType, ItemStack currentItemInMouse) {
 
+        if (btn.action.equalsIgnoreCase("item")) {
+            player.getInventory().addItem(currentItemInMouse.clone());
+        }
+
         if (btn.action.equalsIgnoreCase("tab")) {
-            navigateTo(new DevMenu());
+           // navigateTo(new DevMenu());
             currentTab = btn.customData;
             scrollComponent.setVal(1);
             scrollComponent.Render();
