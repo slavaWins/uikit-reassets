@@ -1,9 +1,12 @@
 package org.slavawins.uikit.menucore;
 
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class BtnMenuCoreContract {
 
@@ -15,6 +18,8 @@ public class BtnMenuCoreContract {
     public boolean isLocked = true;
     public Consumer<BtnMenuCoreContract> event = null;
     public String customData = "";
+    public BiConsumer<ItemStack, ClickType> eventCurrentItemClick;
+
 
     MenuBase menuBase;
 

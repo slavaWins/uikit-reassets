@@ -6,13 +6,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.slavawins.uikit.Uikit;
+import org.slavawins.uikit.componet.interfaces.IMenuCloseListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,12 @@ public class MenuBase implements Listener {
 
     public boolean eventDisabled = false;
     public boolean isLockedAll = true;
-    public boolean isChestMode = true;
+    public boolean isChestMode = false;
+
+    /**
+     * Заблочить инв игрока
+     */
+    public boolean isLockedPlayerInv = true;
 
     public final void setSize(int i) {
         this.rows = Math.min(i, 6);
@@ -131,16 +135,17 @@ public class MenuBase implements Listener {
     }
 
     public final BtnMenuCoreContract addButton(int x, int y, Material mat, String name, String descr, Consumer<BtnMenuCoreContract> event) {
-        ItemStack item = new ItemStack(mat);
-        ItemMeta meta = item.getItemMeta();
-        List<String> lore = new ArrayList<>();
-        lore.add(descr);
 
-        meta.setLore(lore);
-
-        meta.setDisplayName(name);
-        item.setItemMeta(meta);
-
+        ItemStack item = null;
+        if (mat != null) {
+            item = new ItemStack(mat);
+            ItemMeta meta = item.getItemMeta();
+            List<String> lore = new ArrayList<>();
+            lore.add(descr);
+            meta.setLore(lore);
+            meta.setDisplayName(name);
+            item.setItemMeta(meta);
+        }
         return addButtonItem(x, y, item, event, true);
     }
 
@@ -196,11 +201,11 @@ public class MenuBase implements Listener {
             }
 
             if (btn.id > rows * 9 || btn.id < 0) {
-               // System.out.println("Error item btn possition to " + " - " + btn.action + " in pos " + btn.id + " / x:y = " + btn.x + ":" + btn.y);
+                // System.out.println("Error item btn possition to " + " - " + btn.action + " in pos " + btn.id + " / x:y = " + btn.x + ":" + btn.y);
                 continue;
             }
             if (btn.id > 54) {
-            //    System.out.println(ChatColor.RED + "ERROR UIKIT SIZE INV MENU 54");
+                //    System.out.println(ChatColor.RED + "ERROR UIKIT SIZE INV MENU 54");
                 continue;
             }
             guiInventory.setItem(btn.id, btn.item);
@@ -271,12 +276,35 @@ public class MenuBase implements Listener {
         //  player.sendMessage("CBTN to empty:" + id);
     }
 
+    /*
+      @org.bukkit.event.EventHandler
+      public final void eventOnClickOther(InventoryMoveItemEvent e) {
+          if(e.getInitiator()==guiInventory){
+              if (isLockedAll && !isChestMode) e.setCancelled(true);
+              }
+      /*
+      @org.bukkit.event.EventHandler
+      public final void eventOnClickOther2(InventoryDragEvent e) {
+          if(e.getInventory()==guiInventory){
+              if (isLockedAll && !isChestMode) e.setCancelled(true);
+          }
+      }*/
+
+    @org.bukkit.event.EventHandler
+    public final void eventOnClickOther2(InventoryDragEvent e) {
+        //System.out.println("DRAG");
+        if (e.getInventory() == guiInventory) {
+            if (isLockedAll && !isChestMode) e.setCancelled(true);
+        }
+    }
 
     @org.bukkit.event.EventHandler
     public final void eventOnClick(InventoryClickEvent e) {
 
 
+        // System.out.println("InventoryClickEvent");
         if (guiInventory == null) return;
+
 
         Player player = (Player) e.getWhoClicked();
         if (!player.hasMetadata(MENU_META_KEY)) return;
@@ -287,8 +315,30 @@ public class MenuBase implements Listener {
             return;
         }
 
+/*
+        System.out.println("\n\n");
+        System.out.println(e.getClickedInventory() );
+        System.out.println(e.getInventory() );
+        System.out.println(e.getClick() );
+        System.out.println(e.getAction() );
+*/
+        if (isLockedAll && !isChestMode) {
 
-        if (isLockedAll && !isChestMode) e.setCancelled(true);
+            if (e.getClickedInventory() == guiInventory
+                    || e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY
+                //  || e.getAction() == InventoryAction.PLACE_ONE
+                // || e.getAction() == InventoryAction.PLACE_SOME
+            ) {
+                e.setCancelled(true);
+            }
+
+            if (e.getClickedInventory() != guiInventory && isLockedPlayerInv) {
+
+                System.out.println();
+                e.setCancelled(true);
+            }
+
+        }
 
 
         Inventory clickedInventory = e.getClickedInventory();
@@ -303,7 +353,13 @@ public class MenuBase implements Listener {
 
         BtnMenuCoreContract btn = getBtn(e.getSlot());
         if (btn != null) {
+
             onClickButton(btn, e.getClick(), e.getCurrentItem());
+
+            if (btn.eventCurrentItemClick != null && e.getCursor().getType() != Material.AIR) {
+                btn.eventCurrentItemClick.accept(e.getCursor(), e.getClick());
+            }
+
             if (btn.event != null) {
                 btn.event.accept(btn);
             }
@@ -327,6 +383,10 @@ public class MenuBase implements Listener {
         if (guiInventory == null) return;
         if (!e.getInventory().equals(guiInventory)) return;
 
+
+        for (IMenuCloseListener listener : closeListeners) {
+            listener.onMenuClosed();
+        }
         onCloseEvent();
 
         guiInventory.clear();
@@ -369,9 +429,19 @@ public class MenuBase implements Listener {
     }
 
     public void setItemInButton(BtnMenuCoreContract b, ItemStack item) {
-        guiInventory.remove(b.item);
-        b.item = null;
+        if (b.item != null) {
+            guiInventory.remove(b.item);
+            b.item = null;
+        }
         b.item = item;
         guiInventory.setItem(posToId(b.x, b.y), item);
+    }
+
+
+    List<IMenuCloseListener> closeListeners = new ArrayList<>();
+
+    public void addCloseListener(IMenuCloseListener iMenuCloseListener) {
+        closeListeners.add(iMenuCloseListener);
+
     }
 }

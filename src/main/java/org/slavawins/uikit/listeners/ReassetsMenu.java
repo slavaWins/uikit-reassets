@@ -2,10 +2,13 @@ package org.slavawins.uikit.listeners;
 
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.slavawins.reassets.contracts.CategoryEnum;
 import org.slavawins.reassets.contracts.ItemImageContract;
 import org.slavawins.reassets.controllers.RegisterImageController;
 import org.slavawins.reassets.handles.IndexingHandle;
 import org.slavawins.reassets.integration.ReassetsGet;
+import org.slavawins.textrender.service.generator.integration.TRRegister;
+import org.slavawins.uikit.LayerImage;
 import org.slavawins.uikit.componet.*;
 import org.slavawins.uikit.menucore.BtnMenuCoreContract;
 import org.slavawins.uikit.menucore.MenuBase;
@@ -18,7 +21,13 @@ public class ReassetsMenu extends MenuBase {
 
     public ReassetsMenu() {
         setSize(6);
-        setBackgroundCenter(ReassetsGet.image("/reassets/ui/window/scroll_tabs.png"), "Reassets");
+
+        LayerImage layer = new LayerImage();
+        layer.left48();
+        layer.addUnicode(ReassetsGet.image("/reassets/ui/window/scroll_tabs.png"));
+        layer.moveTostartLeft();
+        setTitle( layer.build() +  " ");
+
     }
 
     String currentTab = "";
@@ -40,6 +49,8 @@ public class ReassetsMenu extends MenuBase {
 
         scrollComponent = new ScrollComponent(this, 2, 4);
         for (ItemImageContract img : RegisterImageController.images) {
+            if(!(img.categoryTyep== CategoryEnum.items || img.categoryTyep== CategoryEnum.models))continue;
+
             BtnMenuCoreContract btn = addButtonItem(1, 1, ReassetsGet.item(img.enumName), null, true);
             btn.action = "item";
             btn.customData = img.enumName;
