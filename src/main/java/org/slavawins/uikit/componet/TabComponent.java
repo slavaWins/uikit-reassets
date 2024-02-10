@@ -28,7 +28,7 @@ public class TabComponent extends BaseComponent<Number> {
     }
 
     private void Right(BtnMenuCoreContract btnMenuCoreContract) {
-      //  System.out.println("right");
+        //  System.out.println("right");
         plus(1);
         Render();
     }
@@ -46,23 +46,33 @@ public class TabComponent extends BaseComponent<Number> {
         int end = Math.min(start + pageSize, contents.size()); // конечная позиция элементов текущей страницы //7
 
 
+        for (BtnMenuCoreContract btn : contents) {
+            btn.setVisible(false);
+            btn.x=-1;
+            btn.y=-1;
+            btn.id=-1;
+        }
+        System.out.println("-------");
+
+        for (int i = 2; i <= 8; i++) {
+            menuBase.guiInventory.setItem(menuBase.posToId(i, y), null);
+        }
 
         for (int i = 2; i <= 8; i++) {
 
 
-
-            if (contents.size() < (start + i - 2)+1) { //3 < 0 + 2 + 1
-                menuBase.guiInventory.setItem(menuBase.posToId(i,y), null);
+            if (contents.size() < (start + i - 2) + 1) { //3 < 0 + 2 + 1
                 continue;
             }
 
             BtnMenuCoreContract item = contents.get(start + i - 2); // 0+2+-1
+            System.out.println(i+" " +item.customData);
             item.x = i;
             item.y = y;
             item.updateId();
             item.setVisible(true);
         }
-        //  menuBase.RenderButtons();
+        menuBase.renderButtons();
     }
 
     @Override

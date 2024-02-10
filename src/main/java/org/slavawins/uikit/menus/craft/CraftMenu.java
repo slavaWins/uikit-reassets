@@ -88,7 +88,7 @@ public class CraftMenu extends MenuBase {
         onUserCanselCraftingProcces();
 
         String reasetItemId = ReassetsCheck.isReasset(itemStack);
-        System.out.println(reasetItemId);
+       // System.out.println(reasetItemId);
         if (reasetItemId.indexOf("GUNS_MODELS_GUN") != 0) {
             return false;
         }

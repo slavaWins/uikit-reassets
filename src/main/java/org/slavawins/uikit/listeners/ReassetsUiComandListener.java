@@ -2,8 +2,8 @@ package org.slavawins.uikit.listeners;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.slavawins.reassets.proplugin.Fastcommand;
 import org.slavawins.uikit.menus.craft.CraftMenu;
-import org.slavawins.uikit.proplugin.Fastcommand;
 
 public class ReassetsUiComandListener extends Fastcommand {
 
@@ -11,6 +11,9 @@ public class ReassetsUiComandListener extends Fastcommand {
         super(rootCommand);
 
         onlyOp = true;
+
+        rootEvent = this::ShowItemInUi;
+
 
         CommandElemet com = new CommandElemet();
         com.subcommond = "ui";

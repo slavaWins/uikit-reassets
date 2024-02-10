@@ -26,7 +26,7 @@ public class ReassetsMenu extends MenuBase {
         layer.left48();
         layer.addUnicode(ReassetsGet.image("/reassets/ui/window/scroll_tabs.png"));
         layer.moveTostartLeft();
-        setTitle( layer.build() +  " ");
+        setTitle(layer.build() + " ");
 
     }
 
@@ -49,7 +49,7 @@ public class ReassetsMenu extends MenuBase {
 
         scrollComponent = new ScrollComponent(this, 2, 4);
         for (ItemImageContract img : RegisterImageController.images) {
-            if(!(img.categoryTyep== CategoryEnum.items || img.categoryTyep== CategoryEnum.models))continue;
+            if (!(img.categoryTyep == CategoryEnum.items || img.categoryTyep == CategoryEnum.models)) continue;
 
             BtnMenuCoreContract btn = addButtonItem(1, 1, ReassetsGet.item(img.enumName), null, true);
             btn.action = "item";
@@ -61,6 +61,7 @@ public class ReassetsMenu extends MenuBase {
 
         // CheckboxComponent.AddToggleCheckBox(this, 1, 6, true, "On", "Off", this::Change);
     }
+
 
     public boolean Filter(BtnMenuCoreContract btn) {
         return btn.customData.startsWith(currentTab);
@@ -74,7 +75,7 @@ public class ReassetsMenu extends MenuBase {
         }
 
         if (btn.action.equalsIgnoreCase("tab")) {
-           // navigateTo(new DevMenu());
+            // navigateTo(new DevMenu());
             currentTab = btn.customData;
             scrollComponent.setVal(1);
             scrollComponent.Render();
