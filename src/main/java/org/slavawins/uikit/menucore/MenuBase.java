@@ -10,6 +10,8 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.slavawins.reassets.integration.ReassetsGet;
+import org.slavawins.uikit.LayerImage;
 import org.slavawins.uikit.Uikit;
 import org.slavawins.uikit.componet.interfaces.IMenuCloseListener;
 
@@ -68,6 +70,16 @@ public class MenuBase implements Listener {
         String val = ChatColor.WHITE + "❏" + back;
         if (text != null) val += text;
         setTitle(val);
+    }
+
+    public final void setSingleBackground(String image, String text) {
+
+        LayerImage layer = new LayerImage();
+        layer.left48();
+       // System.out.println(ReassetsGet.image(image));
+        layer.addUnicode(ReassetsGet.image(image));
+        layer.moveTostartLeft();
+        setTitle(layer.build() + text);
     }
 
     public final void setBackgroundCenter(String back, String text) {
@@ -406,18 +418,23 @@ public class MenuBase implements Listener {
     }
 
     public final void onSetVisible(BtnMenuCoreContract b) {
-        if (guiInventory == null) return;
 
+        if (guiInventory == null) return;
 
         if (!b.visible) {
             int exist = findIdByItem(b.item);
-            if (exist == -1) return;
+            if (exist == -1) {
+                b.updateId();
+                if(b.id>-1 && b.id<guiInventory.getSize()-1) {
+                    guiInventory.setItem(b.id, null);
+                }
+                return;
+            }
             guiInventory.setItem(exist, null);
             return;
         }
 
         if (b.item != null) {
-
             int exist = findIdByItem(b.item);
             if (exist > -1) {
                 guiInventory.setItem(exist, null);

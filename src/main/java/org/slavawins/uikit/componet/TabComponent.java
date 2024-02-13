@@ -66,7 +66,7 @@ public class TabComponent extends BaseComponent<Number> {
             }
 
             BtnMenuCoreContract item = contents.get(start + i - 2); // 0+2+-1
-            System.out.println(i+" " +item.customData);
+          //  System.out.println(i+" " +item.customData);
             item.x = i;
             item.y = y;
             item.updateId();

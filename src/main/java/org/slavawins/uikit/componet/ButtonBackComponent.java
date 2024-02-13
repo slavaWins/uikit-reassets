@@ -27,7 +27,7 @@ public class ButtonBackComponent extends BaseComponent<Number> {
     }
 
     private void Click(BtnMenuCoreContract btnMenuCoreContract) {
-        System.out.println("CKLCIK EMP BTN");
+       // System.out.println("CKLCIK EMP BTN");
         if (event != null) {
             event.accept(btnMenuCoreContract);
         }

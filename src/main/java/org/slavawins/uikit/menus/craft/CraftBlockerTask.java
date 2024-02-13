@@ -3,9 +3,9 @@ package org.slavawins.uikit.menus.craft;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class CraftBlockerTask extends BukkitRunnable {
-    private final CraftMenu caseMenu;
+    private final CraftBaseMenu caseMenu;
 
-    public CraftBlockerTask(CraftMenu caseMenu) {
+    public CraftBlockerTask(CraftBaseMenu caseMenu) {
         this.caseMenu = caseMenu;
     }
 

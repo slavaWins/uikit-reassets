@@ -37,7 +37,7 @@ public class Lang {
             langFile = new File(Uikit.myDataFolder, "lang/ru.yml");
         }
 
-        System.out.println("---- LOADIN: " + langFile.getAbsolutePath());
+       // System.out.println("---- LOADIN: " + langFile.getAbsolutePath());
         langConfig = YamlConfiguration.loadConfiguration(langFile);
     }
 }
