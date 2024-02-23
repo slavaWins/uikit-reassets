@@ -220,6 +220,7 @@ public class MenuBase implements Listener {
                 //    System.out.println(ChatColor.RED + "ERROR UIKIT SIZE INV MENU 54");
                 continue;
             }
+
             guiInventory.setItem(btn.id, btn.item);
         }
     }
@@ -346,7 +347,7 @@ public class MenuBase implements Listener {
 
             if (e.getClickedInventory() != guiInventory && isLockedPlayerInv) {
 
-                System.out.println();
+              //  System.out.println();
                 e.setCancelled(true);
             }
 

@@ -20,6 +20,7 @@ public class BtnMenuCoreContract {
     public String customData = "";
     public BiConsumer<ItemStack, ClickType> eventCurrentItemClick;
 
+    public  boolean DISABLED_GIVE_PLAYER_ON_CLOSE_MENU = false;
 
     MenuBase menuBase;
 

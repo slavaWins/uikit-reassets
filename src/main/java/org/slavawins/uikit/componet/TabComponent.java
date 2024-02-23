@@ -52,7 +52,7 @@ public class TabComponent extends BaseComponent<Number> {
             btn.y=-1;
             btn.id=-1;
         }
-        System.out.println("-------");
+       // System.out.println("-------");
 
         for (int i = 2; i <= 8; i++) {
             menuBase.guiInventory.setItem(menuBase.posToId(i, y), null);

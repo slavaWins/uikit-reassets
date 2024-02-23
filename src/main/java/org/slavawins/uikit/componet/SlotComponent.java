@@ -6,11 +6,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.slavawins.reassets.integration.ReassetsCheck;
 import org.slavawins.reassets.integration.ReassetsGet;
 import org.slavawins.uikit.menucore.BtnMenuCoreContract;
-import org.slavawins.uikit.menucore.MenuBase;
 import org.slavawins.uikit.menus.craft.CraftBaseMenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class SlotComponent extends BaseComponent<Number> {
@@ -23,6 +24,9 @@ public class SlotComponent extends BaseComponent<Number> {
     public List<String> nativeFilterItems = new ArrayList<>();
 
     public Function<ItemStack, Boolean> filter = this::filterNative;
+    public Consumer<Void> onSetItemEvent = null;
+
+    public boolean SHOWING_WARNIG = true;
 
 
     public Boolean filterNative(ItemStack itemStack) {
@@ -40,7 +44,7 @@ public class SlotComponent extends BaseComponent<Number> {
         super(menuBase, x, y, 1);
         this.craftMenu = menuBase;
 
-        if(filter!=null) {
+        if (filter != null) {
             this.filter = filter;
         }
 
@@ -57,13 +61,15 @@ public class SlotComponent extends BaseComponent<Number> {
 
 
     public void warningHide() {
-       // System.out.println("HIDE");
-        warning.visible=true;
+        // System.out.println("HIDE");
+        if (!SHOWING_WARNIG) return;
+        warning.visible = true;
         warning.setVisible(false);
         warning.item.setItemMeta(warning.item.getItemMeta());
     }
 
     public void warningShow(String msg) {
+        if (!SHOWING_WARNIG) return;
         ItemMeta meta = warning.item.getItemMeta();
         meta.setDisplayName(msg);
         warning.item.setItemMeta(meta);
@@ -80,6 +86,7 @@ public class SlotComponent extends BaseComponent<Number> {
             menuBase.player.setItemOnCursor(slot.item);
             slot.item = null;
             slot.setItem(null);
+            onChangeItem();
             return;
         }
 
@@ -101,13 +108,18 @@ public class SlotComponent extends BaseComponent<Number> {
                 menuBase.player.setItemOnCursor(slot.item);
 
                 slot.item = null;
-                slot.setItem(inhand);
+                if(inhand!=null) {
+
+                    slot.setItem(inhand);
+               }
+                onChangeItem();
 
                 return;
             }
 
 
             slot.setItem(menuBase.player.getItemOnCursor());
+            onChangeItem();
             menuBase.player.setItemOnCursor(null);
 
             return;
@@ -115,11 +127,17 @@ public class SlotComponent extends BaseComponent<Number> {
     }
 
 
+    public void onChangeItem() {
+        if(onSetItemEvent==null)return;
+        onSetItemEvent.accept(null);
+    }
+
     List<BtnMenuCoreContract> contents = new ArrayList<>();
 
     @Override
     public void onMenuClosed() {
         if (slot.item != null) {
+            if(slot.DISABLED_GIVE_PLAYER_ON_CLOSE_MENU)return;
             menuBase.player.getInventory().addItem(slot.item);
             slot.item = null;
 
@@ -137,13 +155,14 @@ public class SlotComponent extends BaseComponent<Number> {
         slotTo.slot.setItem(slot.item);
         slot.item = null;
         slot.setItem(null);
+        onChangeItem();
         return true;
     }
 
 
     public boolean take(int amount) {
         if (getAmount() < amount) {
-            warningShow("Не хватает предмета. Нужно " + amount+" шт.");
+            warningShow("Не хватает предмета. Нужно " + amount + " шт.");
             return false;
         }
         slot.item.setAmount(slot.item.getAmount() - amount);
@@ -157,5 +176,21 @@ public class SlotComponent extends BaseComponent<Number> {
     public int getAmount() {
         if (slot.item == null) return 0;
         return slot.item.getAmount();
+    }
+
+    public void addAmount(int val) {
+        if (getAmount() == 0) return;
+        setAmount(getAmount() + val);
+    }
+
+    public void setItem(ItemStack item) {
+        slot.setItem(item);
+        onChangeItem();
+    }
+
+    public void setAmount(int val) {
+        if (slot.item == null) return;
+        slot.item.setAmount(val);
+        onChangeItem();
     }
 }

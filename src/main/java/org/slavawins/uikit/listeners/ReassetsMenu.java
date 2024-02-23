@@ -71,6 +71,7 @@ public class ReassetsMenu extends MenuBase {
     public void onClickButton(BtnMenuCoreContract btn, ClickType clickType, ItemStack currentItemInMouse) {
 
         if (btn.action.equalsIgnoreCase("item")) {
+            if(currentItemInMouse==null)return;
             player.getInventory().addItem(currentItemInMouse.clone());
         }
 

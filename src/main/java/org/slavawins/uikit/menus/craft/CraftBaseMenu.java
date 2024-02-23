@@ -70,6 +70,7 @@ public class CraftBaseMenu extends MenuBase {
     public final void onUserCanselCraftingProcces() {
         if (!isRun) return;
         progressBar.setVal(0f);
+        isRun = false;
         if (task == null) return;
         task.cancel();
         task = null;
