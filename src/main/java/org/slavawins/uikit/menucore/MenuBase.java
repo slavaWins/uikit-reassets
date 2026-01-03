@@ -10,10 +10,14 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.slavawins.reassets.integration.ReassetsGet;
 import org.slavawins.uikit.LayerImage;
 import org.slavawins.uikit.Uikit;
+import org.slavawins.uikit.componet.ButtonBackComponent;
 import org.slavawins.uikit.componet.interfaces.IMenuCloseListener;
+import org.slavawins.uikit.helpers.DupeProtection;
+import org.slavawins.uikit.helpers.SimulateOverDose;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +80,7 @@ public class MenuBase implements Listener {
 
         LayerImage layer = new LayerImage();
         layer.left48();
-       // System.out.println(ReassetsGet.image(image));
+        // System.out.println(ReassetsGet.image(image));
         layer.addUnicode(ReassetsGet.image(image));
         layer.moveTostartLeft();
         setTitle(layer.build() + text);
@@ -122,6 +126,10 @@ public class MenuBase implements Listener {
     }
 
 
+    public final int PosToId(int x, int y) {
+        return posToId(x, y);
+    }
+
     public final int posToId(int x, int y) {
         if (x < 0 || x > 9 || y < 0 || y > rows) {
             return -1;
@@ -145,6 +153,42 @@ public class MenuBase implements Listener {
         int y = (int) Math.ceil(id / 9) + 1;
         return y;
     }
+
+    public final BtnMenuCoreContract AddButton(int x, int y, Material mat, String name, String descr, String action) {
+        ItemStack item = null;
+        if (mat != null) {
+            item = new ItemStack(mat);
+        }
+
+        ItemMeta meta = item.getItemMeta();
+        List<String> lore = new ArrayList<>();
+        lore.add(descr);
+        meta.setLore(lore);
+        meta.setDisplayName(name);
+        item.setItemMeta(meta);
+
+        BtnMenuCoreContract b = addButtonItem(x, y, item, null, true);
+        b.isLocked = true;
+        b.action = action;
+        return b;
+    }
+
+    public final BtnMenuCoreContract AddButton(int x, int y, ItemStack item, String action, boolean isLock) {
+
+
+        ItemMeta meta = item.getItemMeta();
+        List<String> lore = new ArrayList<>();
+        lore.add(" ");
+        meta.setLore(lore);
+        meta.setDisplayName("-");
+        item.setItemMeta(meta);
+
+        BtnMenuCoreContract b = addButtonItem(x, y, item, null, true);
+        b.isLocked = isLock;
+        b.action = action;
+        return b;
+    }
+
 
     public final BtnMenuCoreContract addButton(int x, int y, Material mat, String name, String descr, Consumer<BtnMenuCoreContract> event) {
 
@@ -192,10 +236,21 @@ public class MenuBase implements Listener {
     }
 
 
+    public BtnMenuCoreContract getButtonById(int id) {
+        for (BtnMenuCoreContract btn : listBtns) {
+            if (btn.id == id) return btn;
+        }
+        return null;
+    }
+
     public void clearButtons() {
         for (BtnMenuCoreContract btn : listBtns) {
             guiInventory.setItem(btn.id, null);
         }
+    }
+
+    public void RenderButtons() {
+        renderButtons();
     }
 
     public void renderButtons() {
@@ -221,6 +276,9 @@ public class MenuBase implements Listener {
                 continue;
             }
 
+            if(btn.isLocked || isLockedAll) {
+                DupeProtection.addItem(btn.item);
+            }
             guiInventory.setItem(btn.id, btn.item);
         }
     }
@@ -229,7 +287,18 @@ public class MenuBase implements Listener {
 
     }
 
+    @Deprecated
+    public final void Show(Player player) {
+        show(player);
+    }
+
     public final void show(Player player) {
+
+        if (player == null) {
+            System.out.println("ERROR UIKIT MENU SHOW PLAYER IS NULL!!! " + getClass().getSimpleName());
+            return;
+        }
+
         this.player = player;
 
         init();
@@ -314,7 +383,7 @@ public class MenuBase implements Listener {
     @org.bukkit.event.EventHandler
     public final void eventOnClick(InventoryClickEvent e) {
 
-
+       // SimulateOverDose.Hard();
         // System.out.println("InventoryClickEvent");
         if (guiInventory == null) return;
 
@@ -323,6 +392,7 @@ public class MenuBase implements Listener {
         if (!player.hasMetadata(MENU_META_KEY)) return;
 
 
+        if (PMetaHelper.get(player, "menuId") == null) return;
         if (!PMetaHelper.get(player, "menuId").equalsIgnoreCase(menuId)) {
             //    System.out.println("is not my id: " + PMetaHelper.get(player, "menuId"));
             return;
@@ -347,7 +417,7 @@ public class MenuBase implements Listener {
 
             if (e.getClickedInventory() != guiInventory && isLockedPlayerInv) {
 
-              //  System.out.println();
+                //  System.out.println();
                 e.setCancelled(true);
             }
 
@@ -403,9 +473,28 @@ public class MenuBase implements Listener {
         onCloseEvent();
 
         guiInventory.clear();
+        for (BtnMenuCoreContract btn : listBtns) {
+            if (btn.item == null) continue;
+            if (btn.item.getType() == Material.AIR) continue;
+            guiInventory.addItem(btn.item);
+        }
+
+        guiInventory.clear();
         guiInventory = null;
 
         delete();
+
+        DupeProtection.scanPlayer(player);
+
+        BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+
+        scheduler.runTaskLater(Uikit.getInstanse(), new Runnable() {
+            public void run() {
+                //System.out.println("Scan delay");
+                DupeProtection.scanPlayer(player);
+            }
+        }, 50);
+
     }
 
     public int findIdByItem(ItemStack itemStack) {
@@ -426,7 +515,7 @@ public class MenuBase implements Listener {
             int exist = findIdByItem(b.item);
             if (exist == -1) {
                 b.updateId();
-                if(b.id>-1 && b.id<guiInventory.getSize()-1) {
+                if (b.id > -1 && b.id < guiInventory.getSize() - 1) {
                     guiInventory.setItem(b.id, null);
                 }
                 return;

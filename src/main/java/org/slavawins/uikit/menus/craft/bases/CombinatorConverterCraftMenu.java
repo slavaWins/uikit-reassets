@@ -8,6 +8,7 @@ import org.slavawins.uikit.CustomMaterial;
 import org.slavawins.uikit.componet.ButtonBackComponent;
 import org.slavawins.uikit.componet.ProgressArrowComponent;
 import org.slavawins.uikit.componet.SlotComponent;
+import org.slavawins.uikit.helpers.DupeProtection;
 import org.slavawins.uikit.menucore.BtnMenuCoreContract;
 import org.slavawins.uikit.menus.craft.CraftBaseMenu;
 import org.slavawins.uikit.menus.craft.contracts.BiReceptConverter;
@@ -93,6 +94,8 @@ public class CombinatorConverterCraftMenu extends CraftBaseMenu {
             }
         }
 
+        if(slotInput.slot.item==null)return  false;
+        if (ReassetsCheck.isReasset(slotInput.slot.item)==null)return false;
         if (!ReassetsCheck.isReasset(slotInput.slot.item).equalsIgnoreCase(recrpt.from.id)) return false;
         if (slotInput.getAmount() < recrpt.from.amount) return false;
         if (slotResult.getAmount() > 64 - recrpt.to.amount) return false;
@@ -123,12 +126,16 @@ public class CombinatorConverterCraftMenu extends CraftBaseMenu {
         slotResult.updatePackage();
         renderButtons();
 
-
+        DupeProtection.remove(slotResult.slot.item );
+        DupeProtection.remove(slotInput.slot.item );
         slotInput.take(recrpt.from.amount);
+
 
         if (slotInput.getAmount() >= recrpt.from.amount) {
             CraftClick(null);
         }
+
+        slotInput.updatePackage();
 
     }
 

@@ -26,8 +26,8 @@ public class ScrollComponent extends BaseComponent<Number> {
         this.height = height;
         current = 1;
 
-        up = menuBase.addButtonItem(9, y, CustomMaterial.UIKIT_ITEMS_BUTTON_LEFT.toItem(), this::UpClick, true);
-        down = menuBase.addButtonItem(9, y + height, CustomMaterial.UIKIT_ITEMS_BUTTON_RIGHT.toItem(), this::DownClick, true);
+        up = menuBase.addButtonItem(9, y, CustomMaterial.UIKIT_ITEMS_BUTTON_UP.toItem(), this::UpClick, true);
+        down = menuBase.addButtonItem(9, y + height, CustomMaterial.UIKIT_ITEMS_BUTTON_DOWN.toItem(), this::DownClick, true);
     }
 
     private void UpClick(BtnMenuCoreContract btnMenuCoreContract) {

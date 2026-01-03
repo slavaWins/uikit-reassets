@@ -10,6 +10,7 @@ import org.slavawins.reassets.integration.ReassetsGet;
 import org.slavawins.textrender.service.generator.integration.TRRegister;
 import org.slavawins.uikit.LayerImage;
 import org.slavawins.uikit.componet.*;
+import org.slavawins.uikit.helpers.DupeProtection;
 import org.slavawins.uikit.menucore.BtnMenuCoreContract;
 import org.slavawins.uikit.menucore.MenuBase;
 
@@ -72,7 +73,9 @@ public class ReassetsMenu extends MenuBase {
 
         if (btn.action.equalsIgnoreCase("item")) {
             if(currentItemInMouse==null)return;
-            player.getInventory().addItem(currentItemInMouse.clone());
+            ItemStack item = currentItemInMouse.clone();
+            DupeProtection.remove(item);
+            player.getInventory().addItem(item);
         }
 
         if (btn.action.equalsIgnoreCase("tab")) {

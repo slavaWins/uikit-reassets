@@ -10,6 +10,10 @@ import java.util.List;
 public class PMetaHelper {
 
     public static void setPlayerMetadata(Player player, String key, String value) {
+        if(player==null) {
+
+            return;
+        }
         player.setMetadata(key, new FixedMetadataValue(Uikit.getInstanse(), value));
     }
 

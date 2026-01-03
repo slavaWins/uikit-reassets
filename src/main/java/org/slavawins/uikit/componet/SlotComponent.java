@@ -165,11 +165,21 @@ public class SlotComponent extends BaseComponent<Number> {
             warningShow("Не хватает предмета. Нужно " + amount + " шт.");
             return false;
         }
+
+
+        boolean isEmptyNext = false;
+        if(slot.item.getAmount()-amount<=0)isEmptyNext =true;
+
         slot.item.setAmount(slot.item.getAmount() - amount);
+
+        if(isEmptyNext){
+            slot.setItem(null);
+        }
         return true;
     }
 
     public void updatePackage() {
+        if(  slot.item==null)return;
         slot.item.setItemMeta(slot.item.getItemMeta());
     }
 
